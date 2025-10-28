@@ -20,8 +20,8 @@ export const LocalizationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     // to avoid browser module resolution issues with JSON files.
     const loadTranslations = async () => {
       try {
-        const enResponse = await fetch('/locales/en.json');
-        const arResponse = await fetch('/locales/ar.json');
+        const enResponse = await fetch('./locales/en.json');
+        const arResponse = await fetch('./locales/ar.json');
         if (!enResponse.ok || !arResponse.ok) {
             throw new Error('Failed to fetch translation files');
         }
