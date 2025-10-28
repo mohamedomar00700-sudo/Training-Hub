@@ -160,5 +160,9 @@
   "calendarModalTitle": "حدد وقت بدء الجلسة",
   "sessionStartDate": "تاريخ بدء الجلسة",
   "sessionStartTime": "وقت بدء الجلسة",
-  "createCalendarEvent": "إنشاء الحدث"
+  "createCalendarEvent": "إنشاء الحدث",
+  "stat_totalActivities": "إجمالي الأنشطة",
+  "stat_trainingModules": "الوحدات التدريبية",
+  "stat_registeredTrainees": "المتدربون المسجلون",
+  "stat_upcomingSessions": "الجلسات القادمة"
 }

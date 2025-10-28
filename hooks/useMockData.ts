@@ -1,7 +1,8 @@
+
 import { useState, useCallback } from 'react';
-// FIX: Import missing types.
-import type { TrainingActivity, TrainingModule, Trainee, Tool, QuizQuestion } from '../types';
+import type { TrainingActivity, TrainingModule, Trainee, Tool, QuizQuestion, ScheduledSession, Stat } from '../types';
 import { Icons } from '../components/Icons';
+import { useLocalization } from '../contexts/LocalizationContext';
 
 const INITIAL_ACTIVITIES: TrainingActivity[] = [
     {
@@ -503,7 +504,6 @@ const INITIAL_ACTIVITIES: TrainingActivity[] = [
         category: 'Practice',
         objective: 'Learn from failure',
         duration: 23,
-// FIX: Add missing 'tools' property.
         tools: 'Zoom, Google Docs',
         instructions: '1. Provide a scenario where a mistake or failure has occurred.\n2. In breakout groups, have teams analyze what went wrong and develop a recovery plan.\n3. Bring everyone back to share and discuss the different recovery strategies.',
         pharmaExample: 'Product launch failed due to poor forecasting.',
@@ -515,7 +515,6 @@ const INITIAL_ACTIVITIES: TrainingActivity[] = [
         category: 'Practice',
         objective: 'Reinforce learning',
         duration: 18,
-// FIX: Add missing 'tools' property.
         tools: 'Zoom',
         instructions: '1. Assign each participant a small concept from the training.\n2. Give them a few minutes to prepare to teach it.\n3. Have each person briefly teach their concept to their peers in small breakout groups.\n4. Encourage peers to ask questions to the "teacher".',
         pharmaExample: 'Teach: drug labeling rules, bioequivalence, pharmacovigilance.',
@@ -708,8 +707,6 @@ const INITIAL_TOOLS: Tool[] = [
     }
 ];
 
-
-// FIX: Add mock data for modules.
 const INITIAL_MODULES: TrainingModule[] = [
     {
         id: 'mod1',
@@ -718,7 +715,6 @@ const INITIAL_MODULES: TrainingModule[] = [
         description: 'A foundational module covering the key concepts in clinical pharmacy.',
         content: 'Content covers the history of pharmacy, the role of the pharmacist, medication review, and common drug interactions.',
         quiz: [
-// FIX: The QuizQuestion type expects `correctAnswer` to be a string, not `correctAnswerIndex`. Also added missing `type` property.
             { question: 'What is the primary role of a clinical pharmacist?', type: 'multiple-choice', options: ['Selling drugs', 'Ensuring the safe and effective use of medications', 'Inventory management', 'Marketing'], correctAnswer: 'Ensuring the safe and effective use of medications' }
         ]
     },
@@ -732,22 +728,45 @@ const INITIAL_MODULES: TrainingModule[] = [
     }
 ];
 
-// FIX: Add mock data for trainees.
 const INITIAL_TRAINEES: Trainee[] = [
     { id: 'trn1', name: 'Ahmed Mahmoud', employeeId: 'EMP001', branch: 'Riyadh Branch', role: 'Pharmacist', completedModules: ['mod1'] },
     { id: 'trn2', name: 'Fatima Al-Zahra', employeeId: 'EMP002', branch: 'Jeddah Branch', role: 'Pharmacy Assistant', completedModules: [] },
     { id: 'trn3', name: 'Ali Hassan', employeeId: 'EMP003', branch: 'Riyadh Branch', role: 'Trainee Pharmacist', completedModules: ['mod1', 'mod2'] },
 ];
 
+const INITIAL_SESSIONS: ScheduledSession[] = [
+    {
+        id: 'ses1',
+        moduleId: 'mod1',
+        trainer: 'Dr. Evelyn Reed',
+        date: new Date(new Date().setDate(new Date().getDate() + 7)).toISOString(), // 1 week from now
+        attendees: ['trn1', 'trn3']
+    },
+    {
+        id: 'ses2',
+        moduleId: 'mod2',
+        trainer: 'Mr. John Carter',
+        date: new Date(new Date().setDate(new Date().getDate() + 14)).toISOString(), // 2 weeks from now
+        attendees: ['trn2', 'trn3']
+    },
+    {
+        id: 'ses3',
+        moduleId: 'mod1',
+        trainer: 'Dr. Evelyn Reed',
+        date: new Date(new Date().setDate(new Date().getDate() - 10)).toISOString(), // 10 days ago
+        attendees: ['trn1', 'trn2']
+    }
+];
+
 
 export const useMockData = () => {
   const [activities] = useState<TrainingActivity[]>(INITIAL_ACTIVITIES);
   const [tools] = useState<Tool[]>(INITIAL_TOOLS);
-  // FIX: Add state for modules and trainees.
   const [modules, setModules] = useState<TrainingModule[]>(INITIAL_MODULES);
   const [trainees, setTrainees] = useState<Trainee[]>(INITIAL_TRAINEES);
+  const [sessions, setSessions] = useState<ScheduledSession[]>(INITIAL_SESSIONS);
+  const { t } = useLocalization();
 
-  // FIX: Add handlers for modules to support Modules component.
   const addModule = useCallback((newModule: Omit<TrainingModule, 'id'>) => {
     setModules(prev => [...prev, { ...newModule, id: `mod${Date.now()}` }]);
   }, []);
@@ -756,7 +775,28 @@ export const useMockData = () => {
     setModules(prev => prev.map(m => m.id === updatedModule.id ? updatedModule : m));
   }, []);
 
+  const stats: Stat[] = [
+    {
+        value: activities.length,
+        label: t('stat_totalActivities'),
+        icon: Icons.activity,
+    },
+    {
+        value: modules.length,
+        label: t('stat_trainingModules'),
+        icon: Icons.book,
+    },
+    {
+        value: trainees.length,
+        label: t('stat_registeredTrainees'),
+        icon: Icons.presentation,
+    },
+    {
+        value: sessions.filter(s => new Date(s.date) > new Date()).length,
+        label: t('stat_upcomingSessions'),
+        icon: Icons.calendar,
+    },
+  ];
 
-  // FIX: Return modules and trainees from the hook.
-  return { activities, tools, modules, trainees, addModule, updateModule };
+  return { activities, tools, modules, trainees, sessions, stats, addModule, updateModule };
 };

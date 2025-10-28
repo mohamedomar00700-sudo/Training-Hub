@@ -1,3 +1,4 @@
+
 import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
 
 type Language = 'en' | 'ar';
@@ -56,7 +57,7 @@ export const LocalizationProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
   // Render children only after translations have been loaded.
   if (!translations) {
-    return null;
+    return <div className="min-h-screen bg-slate-100" />; // Render a blank screen while loading
   }
 
   return (

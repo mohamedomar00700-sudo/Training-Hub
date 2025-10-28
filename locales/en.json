@@ -160,5 +160,9 @@
   "calendarModalTitle": "Set Session Start Time",
   "sessionStartDate": "Session Start Date",
   "sessionStartTime": "Session Start Time",
-  "createCalendarEvent": "Create Event"
+  "createCalendarEvent": "Create Event",
+  "stat_totalActivities": "Total Activities",
+  "stat_trainingModules": "Training Modules",
+  "stat_registeredTrainees": "Registered Trainees",
+  "stat_upcomingSessions": "Upcoming Sessions"
 }
